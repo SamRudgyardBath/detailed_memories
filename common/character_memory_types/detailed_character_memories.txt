@@ -1,25 +1,29 @@
-﻿new_alliance = {
+﻿alliance_new_marriage = { # New alliance for you through two secondarys
 	categories = { positive major alliance }
 	icon = "alliance.dds"
 	description = {
 		random_valid = {
-			desc = new_alliance_desc_1
+			desc = alliance_new_marriage_desc_1
 		}
 	}
 
-	second_perspective_description = {
+	participants = { ally secondary_actor secondary_recipient}
+
+	duration = {
+		years = memory_default_duration
+	}
+}
+
+alliance_new_marriage_mine = { # New alliance gained through your marriage to your spouse
+	categories = { positive major alliance }
+	icon = "alliance.dds"
+	description = {
 		random_valid = {
-			desc = new_alliance_desc_second_perspective_1
+			desc = alliance_new_marriage_mine_desc_1
 		}
 	}
 
-	third_perspective_description = {
-		random_valid = {
-			desc = new_alliance_desc_third_perspective_1
-		}
-	}
-
-	participants = { ally }
+	participants = { ally spouse }
 
 	duration = {
 		years = memory_default_duration
