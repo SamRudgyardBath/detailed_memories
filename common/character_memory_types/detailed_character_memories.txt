@@ -29,3 +29,35 @@ alliance_new_marriage_mine = { # New alliance gained through your marriage to yo
 		years = memory_default_duration
 	}
 }
+
+siege_lost = { # Siege lost
+	categories = { negative minor war }
+	icon = "battle.dds"
+	description = {
+		random_valid = {
+			desc = siege_lost_desc_1
+		}
+	}
+
+	participants = { occupier barony county }
+
+	duration = {
+		years = memory_default_duration
+	}
+}
+
+siege_won = { # Siege lost
+	categories = { positive minor war }
+	icon = "battle.dds"
+	description = {
+		random_valid = {
+			desc = siege_won_desc_1
+		}
+	}
+
+	participants = { previous_controller barony county }
+
+	duration = {
+		years = memory_default_duration
+	}
+}
