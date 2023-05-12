@@ -4,4 +4,4 @@ tags={
 	"Events"
 }
 name="Detailed Memories"
-supported_version="1.8.2"
+supported_version="1.9.*"
