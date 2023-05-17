@@ -12,11 +12,13 @@ A CK3 mod that expands on the current memory system, to include a wider range of
 | on_alliance_removed | Presumably whenever a character loses an alliance, no matter the reason? | alliance_on_actions.txt | No | No |
 | on_alliance_broken | When a character breaks an alliance | alliance_on_actions.txt | No | No |
 
+Creating an alliance through marriage has been introduced. So whilst not exactly on_alliance_added, is close enough for now.
+
 ## Armies, Combat, Wars
 
 | Event | Description | Associated Files | Added? | Tested? |
 | :---: | :--- | :---: | :---: | :---: |
-| on_siege_completion | When a siege completes, should fire for both holder and leige | army_on_actions.txt | No | No |
+| on_siege_completion | When a siege completes, should fire for both holder and leige | army_on_actions.txt | Yes | No |
 | on_raid_action_start | When someone begins raiding your territory? | army_on_actions.txt | No | No |
 | on_raid_action_completion | When someone finished raiding your territory? | army_on_actions.txt | No | No |
 | on_defeat_raid_army | When a raid army is defeated | army_on_actions.txt | No | No |
