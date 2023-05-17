@@ -39,14 +39,14 @@ siege_lost = { # Siege lost
 		}
 	}
 
-	participants = { occupier barony county }
+	participants = { occupier current_war }
 
 	duration = {
 		years = memory_default_duration
 	}
 }
 
-siege_won = { # Siege lost
+siege_won = { # Siege won
 	categories = { positive minor war }
 	icon = "battle.dds"
 	description = {
@@ -55,7 +55,7 @@ siege_won = { # Siege lost
 		}
 	}
 
-	participants = { previous_controller barony county }
+	participants = { previous_controller current_war }
 
 	duration = {
 		years = memory_default_duration
