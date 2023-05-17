@@ -2,3 +2,6 @@
  #Descs
 alliance_new_marriage_desc_1:0 "i gained an alliance with [ally.GetTitledFirstName] through the marriage of [secondary_actor.GetTitledFirstName] and [secondary_recipient.GetTitledFirstName]"
 alliance_new_marriage_mine_desc_1:0 "i gained an alliance with [ally.GetTitledFirstName] through my marriage to [spouse.GetTitledFirstName]"
+
+siege_lost_desc_1:0 "[ROOT.Var('siege_location').Title.GetBaseName] is now occupied by [occupier.GetTitledFirstName]"
+siege_won_desc_1:0 "my army successfully sieged [ROOT.Var('siege_location').Title.GetBaseName]"
