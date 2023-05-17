@@ -1,0 +1,95 @@
+# called when a siege completes. Does *not* fire on reoccupation by province order
+# root is the occupant
+# scope:barony is the barony title that got occupied
+# scope:county is the county title for the barony
+# scope:previous_controller is the previous controller of the county
+# scope:war is the war causing the previous controller and the occupant to be hostile
+# occupied_baronies is a list of all baronies that the siege caused the occupier to control (I.E., can include baronies with no fort level)
+on_siege_completion = {
+	
+	events = {
+		siege.0101 # Notify holders/lieges that the county was lost to siege
+		siege.0001 # Capture/kill prisoners
+		siege.0031 # Chance to steal an artifact
+		faction_demand.1010 #Reinforce populist rebels
+		faction_demand.1110 #Reinforce peasant rebels
+		siege.1001 #Someone I care about was immured here...
+		intrigue_scheming.1804 # I had genuine/fake info about the defenses. Follows up intrigue_scheming.1801 so this won't actually trigger after every siege
+	}
+    effect = {
+		if = {
+			limit = {
+				exists = scope:previous_controller
+				exists = scope:war
+			}
+
+			# Create memories
+			scope:barony = {
+				save_scope_as = siege_province
+			}
+
+			scope:war = {
+				save_scope_as = current_war
+			}
+			
+			scope:previous_controller = { # Memory for holder
+				create_character_memory = { 
+					type = siege_lost
+					participants = {
+						occupier = root
+						current_war = scope:war
+					}
+				}
+				scope:new_memory = {
+					save_scope_as = siege_memory
+				}
+				scope:siege_memory = {
+					set_variable = {
+						name = siege_location
+						value = scope:siege_province
+					}
+				}
+				scope:new_memory = {
+					save_scope_as = siege_memory
+				}
+				scope:siege_memory = {
+					set_variable = {
+						name = current_war
+						value = scope:current_war
+					}
+				}
+			}
+
+			root = { # Memory for occupier
+				create_character_memory = { 
+					type = siege_won
+					participants = {
+						previous_controller = scope:previous_controller
+						current_war = scope:war
+					}
+				}
+				scope:new_memory = {
+					save_scope_as = siege_memory
+				}
+				scope:siege_memory = {
+					set_variable = {
+						name = siege_location
+						value = scope:siege_province
+					}
+				}
+				scope:new_memory = {
+					save_scope_as = siege_memory
+				}
+				scope:siege_memory = {
+					set_variable = {
+						name = current_war
+						value = scope:current_war
+					}
+				}
+			}
+		}
+        
+
+		
+    }
+}
