@@ -5,3 +5,6 @@ alliance_new_marriage_mine_desc_1:0 "i gained an alliance with [ally.GetTitledFi
 
 siege_lost_desc_1:0 "[ROOT.Var('siege_location').Title.GetBaseName] is now occupied by [occupier.GetTitledFirstName]"
 siege_won_desc_1:0 "my army successfully sieged [ROOT.Var('siege_location').Title.GetBaseName]"
+
+negotiate_alliance_recipient_desc_1:0 "my [owner.Custom2('RelationToMeShort', SCOPE.sC('actor'))], [actor.GetTitledFirstName], negotiated an alliance with me"
+negotiate_alliance_actor_desc_1:0 "i negotiated an alliance with my [owner.Custom2('RelationToMeShort', SCOPE.sC('recipient'))], [recipient.GetTitledFirstName]"

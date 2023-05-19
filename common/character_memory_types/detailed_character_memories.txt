@@ -61,3 +61,35 @@ siege_won = { # Siege won
 		years = memory_default_duration
 	}
 }
+
+negotiate_alliance_recipient = {
+	categories = { positive major alliance }
+	icon = "alliance.dds"
+	description = {
+		random_valid = {
+			desc = negotiate_alliance_recipient_desc_1
+		}
+	}
+
+	participants = { actor }
+
+	duration = {
+		years = memory_default_duration
+	}
+}
+
+negotiate_alliance_actor = {
+	categories = { positive major alliance }
+	icon = "alliance.dds"
+	description = {
+		random_valid = {
+			desc = negotiate_alliance_actor_desc_1
+		}
+	}
+
+	participants = { recipient }
+
+	duration = {
+		years = memory_default_duration
+	}
+}
