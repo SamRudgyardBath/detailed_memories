@@ -93,3 +93,35 @@ negotiate_alliance_actor = {
 		years = memory_default_duration
 	}
 }
+
+travel_generic_Leaving = {
+	categories = { positive minor travel }
+	icon = "activity_hunt.dds"
+	description = {
+		random_valid = {
+			desc = travel_generic_Leaving_desc_1
+		}
+	}
+
+	participants = { }
+
+	duration = {
+		years = memory_default_duration
+	}
+}
+
+travel_hunt_Leaving = {
+	categories = { positive minor travel }
+	icon = "activity_hunt.dds"
+	description = {
+		random_valid = {
+			desc = travel_hunt_Leaving_desc_1
+		}
+	}
+
+	participants = { host }
+
+	duration = {
+		years = memory_default_duration
+	}
+}

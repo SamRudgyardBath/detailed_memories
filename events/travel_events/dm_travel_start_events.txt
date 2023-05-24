@@ -1,0 +1,415 @@
+namespace = travel_start_event
+
+#Generic start (no activity)
+#Should probably mostly be used for DEBUG purposes
+travel_start_event.1000 = {
+	type = character_event
+	title = {
+		first_valid = {
+			#Sick start
+			triggered_desc = {
+				trigger = { has_any_debilitating_illness = yes }
+				desc = travel_start_event.1000.t_sick
+			}
+			#Default
+			triggered_desc = {
+				desc = travel_start_event.1000.t
+			}
+		}
+	} 
+	desc = {
+		first_valid = {
+			#Sick start
+			triggered_desc = {
+				trigger = { has_any_debilitating_illness = yes }
+				desc = travel_start_event.1000.desc_sick
+			}
+			#Default
+			triggered_desc = {
+				desc = travel_start_event.1000.desc
+			}
+		}
+	}
+	theme = travel
+	left_portrait = {
+		character = root
+		#Sick - sick animation
+		triggered_animation = {
+			trigger = { has_any_debilitating_illness = yes }
+			animation = sick
+		}
+		triggered_animation = {
+			trigger = {
+				OR = {
+					has_trait = lunatic
+					has_trait = possessed
+				}
+			}
+			animation = personality_irrational
+		}
+		#Default
+	   	animation = personality_rational
+	}
+	#Show our Travel Leader
+	right_portrait = {
+		trigger = { exists = scope:travel_leader }
+		character = scope:travel_leader
+	}
+	trigger = {
+		is_available_travelling = yes
+		is_landed = yes
+		NOT = { exists = involved_activity }
+	}
+	immediate = {
+		play_music_cue = mx_cue_travel_start
+		if = {
+			limit = { exists = current_travel_plan.travel_leader }
+			current_travel_plan.travel_leader = { save_scope_as = travel_leader }
+		}
+		root = {
+			create_character_memory = { # Memory for root
+				type = travel_generic_Leaving
+			}
+		}
+	}
+	#Giddy up!
+	option = { 
+		name = {
+			text = {
+				first_valid = {
+					#Yeah, yeah ...
+					triggered_desc = {
+						trigger = {
+							OR = {
+								has_any_debilitating_illness = yes
+								has_trait = cynical
+							}
+						}
+						desc = travel_start_event.1000.a_cynical
+					}
+					#Everything is _awesome_
+					triggered_desc = {
+						desc = travel_start_event.1000.a
+					}
+				}
+			}
+		}
+	}
+}
+
+#Travelling to a Hunt
+travel_start_event.1070 = {
+	type = character_event
+	title = {
+		first_valid = {
+			#Sick Hunt
+			triggered_desc = {
+				trigger = {
+					has_any_debilitating_illness = yes
+				}
+				desc = travel_start_event.1070.t_sick_hunt
+			}
+			#Hunt
+			triggered_desc = {
+				desc = travel_start_event.1070.t_hunt
+			}
+		}
+	} 
+	desc = {
+		#Intro
+		first_valid = {
+			#Hunt
+			triggered_desc = {
+				trigger = { exists = scope:host }
+				desc = travel_start_event.1070.desc_hunt
+			}
+			#My Hunt
+			triggered_desc = {
+				desc = travel_start_event.1070.desc_my_hunt
+			}
+		}
+		#Relationship to host segway
+		first_valid = {
+			#Negative
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					has_relation_rival = involved_activity.activity_host
+				}
+				desc = travel_start_event.1070.desc_hunt_negative
+			}
+			#Positive
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					has_any_good_relationship_with_character_trigger = { CHARACTER = scope:host }
+				}
+				desc = travel_start_event.1070.desc_hunt_positive
+			}
+			#Default
+			triggered_desc = {
+				trigger = { exists = scope:host }
+				desc = travel_start_event.1070.desc_hunt_default
+			}
+		}
+		#Trait flavor for my hunt
+		first_valid = {
+			#Hunter
+			triggered_desc = {
+				trigger = {
+					has_trait = lifestyle_hunter 
+					NOT = { exists = scope:host }
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1070.desc_my_hunt_hunter
+			}
+			#Humble
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host }
+					OR = {
+						has_trait = humble
+						has_trait = shy
+					}
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1070.desc_my_hunt_humble
+			}
+			#Arrogant
+			triggered_desc = {
+				trigger = { 
+					NOT = { exists = scope:host }
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1070.desc_my_hunt_arrogant
+			}
+		}
+		#Outro
+		first_valid = {
+			#Sick Hunt
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					has_any_debilitating_illness = yes
+				}
+				desc = travel_start_event.1070.desc_sick_hunt_outro
+			}
+			#Dangerous Hunt
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					involved_activity = { 
+						has_activity_option = { category = special_type option = hunt_type_standard }
+						activity_location.county = { has_county_modifier = hunt_sighting_dangerous_modifier }
+					}
+				}
+				desc = travel_start_event.1070.desc_hunt_outro_dangerous
+			}
+			#Standard Hunt
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					involved_activity = { 
+						has_activity_option = { category = special_type option = hunt_type_standard }
+					}
+				}
+				desc = travel_start_event.1070.desc_hunt_outro_standard
+			}
+			#Legendary Hunt
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					involved_activity = { 
+						has_activity_option = { category = special_type option = hunt_type_legendary }
+					}
+				}
+				desc = travel_start_event.1070.desc_hunt_outro_legendary
+			}
+			#Falconry Hunt
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					involved_activity = { 
+						has_activity_option = { category = special_type option = hunt_type_falconry }
+					}
+				}
+				desc = travel_start_event.1070.desc_hunt_outro_falconry
+			}
+			#Sick My Hunt
+			triggered_desc = {
+				trigger = {
+					has_any_debilitating_illness = yes
+				}
+				desc = travel_start_event.1070.desc_sick_my_hunt_outro
+			}
+			#Dangerous My Hunt
+			triggered_desc = {
+				trigger = {
+					involved_activity = { 
+						has_activity_option = { category = special_type option = hunt_type_standard }
+						activity_location.county = { has_county_modifier = hunt_sighting_dangerous_modifier }
+					}
+				}
+				desc = travel_start_event.1070.desc_my_hunt_outro_dangerous
+			}
+			#Standard My Hunt
+			triggered_desc = {
+				trigger = {
+					involved_activity = { 
+						has_activity_option = { category = special_type option = hunt_type_standard }
+					}
+				}
+				desc = travel_start_event.1070.desc_my_hunt_outro_standard
+			}
+			#Legendary My Hunt
+			triggered_desc = {
+				trigger = {
+					involved_activity = { 
+						has_activity_option = { category = special_type option = hunt_type_legendary }
+					}
+				}
+				desc = travel_start_event.1070.desc_my_hunt_outro_legendary
+			}
+			#Falconry My Hunt
+			triggered_desc = {
+				trigger = {
+					involved_activity = { 
+						has_activity_option = { category = special_type option = hunt_type_falconry }
+					}
+				}
+				desc = travel_start_event.1070.desc_my_hunt_outro_falconry
+			}
+		}
+	}
+	theme = travel
+	left_portrait = {
+		character = root
+		#Sick - sick animation
+		triggered_animation = {
+			trigger = { has_any_debilitating_illness = yes }
+			animation = sick
+		}
+		triggered_animation = {
+			trigger = {
+				involved_activity = { 
+					has_activity_option = { category = special_type option = hunt_type_falconry }
+				}
+			}
+			animation = hunting_falcon
+		}
+		triggered_animation = {
+			trigger = {
+				involved_activity = { has_activity_type = activity_hunt }
+			}
+			animation = hunting_horn
+		}
+		animation = happiness
+	}
+	#Show our Travel Leader
+	right_portrait = {
+		trigger = { exists = current_travel_plan.travel_leader }
+		character = current_travel_plan.travel_leader
+	}
+	#Show our host
+	lower_right_portrait = {
+		trigger = { exists = scope:host }
+		character = scope:host
+	}
+	trigger = {
+		is_available_travelling = yes
+		is_landed = yes
+		exists = involved_activity
+		involved_activity = { has_activity_type = activity_hunt }
+	}
+	immediate = {
+		play_music_cue = mx_cue_travel_start
+		if = {
+			limit = {
+				NOT = { involved_activity.activity_host = root }
+			}
+			#Check if we dislike the host
+			if = {
+				limit = {
+					OR = {
+						has_relation_rival = involved_activity.activity_host
+						opinion = {
+							target = involved_activity.activity_host
+							value < 10
+						}
+					}
+				}
+				add_character_flag = we_dislike_host
+			}
+			#Save the scope for loc
+			involved_activity.activity_host = { save_scope_as = host }
+			}
+			involved_activity = {
+				activity_location = {
+					save_scope_as = final_destination_province
+				}
+			}
+			root = {
+				create_character_memory = {
+					type = travel_hunt_Leaving
+					participants = {host = scope:host}
+				}
+				scope:new_memory = {
+					save_scope_as = location_memory
+				}
+				scope:location_memory = {
+					set_variable = {
+						name = current_location
+						value = root.location
+					}
+				}
+				scope:new_memory = {
+					save_scope_as = destination_memory
+				}
+				scope:destination_memory = {
+					set_variable = {
+						name = destination
+						value = scope:final_destination_province
+					}
+				}
+				# set_variable = {
+				# 	name = current_location
+				# 	value = root.location
+				# }
+				# set_variable = {
+				# 	name = destination
+				# 	value = scope:activity_location
+				# }
+			}
+		}
+	}
+	#Giddy up!
+	option = { 
+		name = {
+			text = {
+				first_valid = {
+					#Yeah, yeah ...
+					triggered_desc = {
+						trigger = {
+							OR = {
+								has_any_debilitating_illness = yes
+								has_character_flag = we_dislike_host
+								has_trait = craven
+							}
+						}
+						desc = travel_start_event.1000.a_craven
+					}
+					#Everything is _awesome_
+					triggered_desc = {
+						desc = travel_start_event.1000.a
+					}
+				}
+			}
+		}
+	}
+	after = {
+		if = {
+			limit = { has_character_flag = we_dislike_host }
+			remove_character_flag = we_dislike_host
+		}
+	}
+}
