@@ -173,3 +173,19 @@ travel_hunt_leaving = {
 		years = memory_default_duration
 	}
 }
+
+arrived_at_new_court = {
+	categories = { minor travel }
+	icon = "_default.dds"
+	description = {
+		random_valid = {
+			desc = arrived_at_new_court_desc_1
+		}
+	}
+
+	participants = { host }
+
+	duration = {
+		years = memory_default_duration
+	}
+}

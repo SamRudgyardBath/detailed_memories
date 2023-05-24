@@ -14,3 +14,5 @@ travel_wedding_leaving_desc_1:0 "i travelled to [ROOT.Var('destination').GetProv
 travel_hunt_leaving_desc_1:0 "i travelled to [ROOT.Var('destination').GetProvince.GetName] for [host.GetTitledFirstNamePossessive] [GetActivityType('activity_hunt').GetName]"
 travel_tournament_leaving_desc_1:0 "i travelled to [ROOT.Var('destination').GetProvince.GetName] for [host.GetTitledFirstNamePossessive] [GetActivityType('activity_tournament').GetName]"
 travel_feast_leaving_desc_1:0 "i travelled to [ROOT.Var('destination').GetProvince.GetName] for [host.GetTitledFirstNamePossessive] [GetActivityType('activity_feast').GetName]"
+
+arrived_at_new_court_desc_1:0 "i was a guest at [host.GetTitledFirstNamePossessive] court at [ROOT.Var('destination').GetProvince.GetName]"
