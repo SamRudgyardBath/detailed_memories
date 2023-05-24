@@ -94,12 +94,12 @@ negotiate_alliance_actor = {
 	}
 }
 
-travel_generic_Leaving = {
+travel_generic_leaving = {
 	categories = { positive minor travel }
 	icon = "activity_hunt.dds"
 	description = {
 		random_valid = {
-			desc = travel_generic_Leaving_desc_1
+			desc = travel_generic_leaving_desc_1
 		}
 	}
 
@@ -110,12 +110,60 @@ travel_generic_Leaving = {
 	}
 }
 
-travel_hunt_Leaving = {
+travel_tournament_leaving = {
 	categories = { positive minor travel }
 	icon = "activity_hunt.dds"
 	description = {
 		random_valid = {
-			desc = travel_hunt_Leaving_desc_1
+			desc = travel_tournament_leaving_desc_1
+		}
+	}
+
+	participants = { host }
+
+	duration = {
+		years = memory_default_duration
+	}
+}
+
+travel_wedding_leaving = {
+	categories = { positive minor travel }
+	icon = "activity_hunt.dds"
+	description = {
+		random_valid = {
+			desc = travel_wedding_leaving_desc_1
+		}
+	}
+
+	participants = { host }
+
+	duration = {
+		years = memory_default_duration
+	}
+}
+
+travel_feast_leaving = {
+	categories = { positive minor travel }
+	icon = "activity_hunt.dds"
+	description = {
+		random_valid = {
+			desc = travel_feast_leaving_desc_1
+		}
+	}
+
+	participants = { host }
+
+	duration = {
+		years = memory_default_duration
+	}
+}
+
+travel_hunt_leaving = {
+	categories = { positive minor travel }
+	icon = "activity_hunt.dds"
+	description = {
+		random_valid = {
+			desc = travel_hunt_leaving_desc_1
 		}
 	}
 

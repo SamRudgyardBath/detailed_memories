@@ -97,6 +97,1184 @@ travel_start_event.1000 = {
 	}
 }
 
+#Travelling to a Tournament
+travel_start_event.1010 = {
+	type = character_event
+	title = {
+		first_valid = {
+			#Sick Tournament
+			triggered_desc = {
+				trigger = { has_any_debilitating_illness = yes }
+				desc = travel_start_event.1010.t_sick_tournament
+			}
+			#Tournament
+			triggered_desc = {
+				desc = travel_start_event.1010.t_tournament
+			}
+		}
+	} 
+	desc = {
+		first_valid = {
+			#Shared intro for other person's tournament
+			triggered_desc = {
+				trigger = { exists = scope:host }
+				desc = travel_start_event.1010.desc_tournament_intro
+			}
+		}
+		first_valid = {
+			#Sick Tournament
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					has_any_debilitating_illness = yes
+				}
+				desc = travel_start_event.1010.desc_sick_tournament
+			}
+			#Tournament
+			triggered_desc = {
+				trigger = { exists = scope:host }
+				desc = travel_start_event.1010.desc_tournament
+			}
+			#Sick My Tournament
+			triggered_desc = {
+				trigger = { has_any_debilitating_illness = yes }
+				desc = travel_start_event.1010.desc_sick_my_tournament
+			}
+			#My Tournament
+			triggered_desc = {
+				desc = travel_start_event.1010.desc_my_tournament
+			}
+		}
+		first_valid = {
+			#Tournament Negative
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					has_character_flag = we_dislike_host
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1010.desc_tournament_outro_negative
+			}
+			#Tournament Other Culture
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					NOT = { involved_activity.activity_host.culture = root.culture }
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1010.desc_tournament_outro_positive_culture
+			}
+			#Tournament
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1010.desc_tournament_outro_positive
+			}
+			#My Tournament Shy
+			triggered_desc = {
+				trigger = {
+					OR = {
+						has_trait = humble
+						has_trait = content
+						has_trait = shy
+					}
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1010.desc_my_tournament_outro_shy
+			}
+			#My Tournament Default
+			triggered_desc = {
+				trigger = { has_any_debilitating_illness = no }
+				desc = travel_start_event.1010.desc_my_tournament_outro
+			}
+		}
+	}
+	theme = travel
+	left_portrait = {
+		character = root
+		#Sick - sick animation
+		triggered_animation = {
+			trigger = { has_any_debilitating_illness = yes }
+			animation = sick
+		}
+		animation = marshal #personality_rational?
+	}
+	#Show another marshal character to get some tournament vibes going
+	right_portrait = {
+		trigger = { exists = scope:our_entourage_character }
+		character = scope:our_entourage_character
+		animation = marshal
+	}
+	#Show our Travel Leader
+	lower_left_portrait = {
+		trigger = { 
+			exists = current_travel_plan.travel_leader
+			exists = scope:our_entourage_character
+			NOT = { scope:our_entourage_character = current_travel_plan.travel_leader }
+		}
+		character = current_travel_plan.travel_leader
+	}
+   	#Show our host
+	lower_right_portrait = {
+		trigger = { exists = scope:host }
+		character = scope:host
+	}
+	trigger = {
+		is_available_travelling = yes
+		is_landed = yes
+		exists = involved_activity
+		involved_activity = { has_activity_type = activity_tournament }
+	}
+	immediate = {
+		play_music_cue = mx_cue_travel_start
+		# Do we have beef with the host?
+		if = {
+			limit = {
+				NOT = { involved_activity.activity_host = root }
+			}
+			#Check if we dislike the host
+			if = {
+				limit = {
+					OR = {
+						has_relation_rival = involved_activity.activity_host
+						opinion = {
+							target = involved_activity.activity_host
+							value < 10
+						}
+					}
+				}
+				add_character_flag = we_dislike_host
+			}
+			#Let's save the scope
+			involved_activity.activity_host = { save_scope_as = host }
+		}
+		# Sort some portrait scopes.
+		## Check if we have a champion with us for the portrait
+		if = {
+			limit = { 
+				employs_court_position = champion_court_position
+				current_travel_plan = {
+					any_entourage_character = {
+						has_court_position = champion_court_position
+					}
+				}
+			}
+			current_travel_plan = {
+				random_entourage_character = {
+					limit = { has_court_position = champion_court_position }
+					save_scope_as = our_entourage_character
+				}
+			}
+		}
+		## Otherwise just pick a knight
+		else_if = {
+			limit = {
+				current_travel_plan = {
+					any_entourage_character = {
+						is_knight_of = root
+					}
+				}
+			}
+			current_travel_plan = {
+				random_entourage_character = {
+					limit = { is_knight_of = root }
+					save_scope_as = our_entourage_character
+				}
+			}
+		}
+		## ... or the travel leader. Lol.
+		else_if = {
+			limit = { exists = current_travel_plan.travel_leader }
+			current_travel_plan.travel_leader = {
+				save_scope_as = our_entourage_character
+			}
+		}
+		add_character_flag = wear_armor
+
+		involved_activity = {
+			activity_location = {
+				save_scope_as = final_destination_province
+			}
+		}
+		root = {
+			create_character_memory = {
+				type = travel_tournament_leaving
+				participants = {host = scope:host}
+			}
+			scope:new_memory = {
+				save_scope_as = destination_memory
+			}
+			scope:destination_memory = {
+				set_variable = {
+					name = destination
+					value = scope:final_destination_province
+				}
+			}
+		}
+	}
+	#Giddy up!
+	option = { 
+		name = {
+			text = {
+				first_valid = {
+					#Yeah, yeah ...
+					triggered_desc = {
+						trigger = {
+							OR = {
+								has_any_debilitating_illness = yes
+								has_character_flag = we_dislike_host
+								has_trait = cynical
+							}
+						}
+						desc = travel_start_event.1000.a_cynical
+					}
+					#Everything is _awesome_
+					triggered_desc = {
+						desc = travel_start_event.1000.a
+					}
+				}
+			}
+		}
+		# If this is a tourney, we want to nab all of our knights for the ride.
+		if = {
+			limit = {
+				root.involved_activity ?= { has_activity_type = activity_tournament }
+			}
+			# We hide the overall effect because a custom parameter doesn't work well with the add_companion effect.
+			hidden_effect = {
+				every_knight = {
+					limit = {
+						is_ruler = no
+						is_available_ai = yes
+					}
+					save_scope_as = char_temp
+					root.current_travel_plan = { add_companion = scope:char_temp }
+				}
+				clear_saved_scope = char_temp
+			}
+			custom_tooltip = travel_start_event.1010.tt.tournament.every_knight
+		}
+	}
+	after = {
+		if = {
+			limit = { has_character_flag = we_dislike_host }
+			remove_character_flag = we_dislike_host
+		}
+		remove_character_flag = wear_armor
+	}
+}
+
+#Travelling to a Wedding
+travel_start_event.1030 = {
+	type = character_event
+	title = {
+		first_valid = {
+			#Bloody Wedding
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host } #No host is saved so I am the host
+					involved_activity ?= { 
+						has_activity_type = activity_wedding
+						has_activity_option = {
+							category = special_type
+							option = wedding_type_bloody
+						}
+					}
+				}
+				desc = travel_start_event.1030.t_red_wedding
+			}
+			#Sick Wedding
+			triggered_desc = {
+				trigger = {
+					has_any_debilitating_illness = yes
+				}
+				desc = travel_start_event.1030.t_sick_wedding
+			}
+			#Wedding
+			triggered_desc = {
+				desc = travel_start_event.1030.t_wedding
+			}
+		}
+	} 
+	desc = {
+		#Intro
+		first_valid = {
+			#Sick Bloody Wedding
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host } #No host is saved so I am the host
+					involved_activity ?= { 
+						has_activity_type = activity_wedding
+						has_activity_option = {
+							category = special_type
+							option = wedding_type_bloody
+						}
+					}
+					has_any_debilitating_illness = yes
+				}
+				desc = travel_start_event.1030.desc_sick_red_wedding
+			}
+			#Bloody Wedding
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host } #No host is saved so I am the host
+					involved_activity ?= { 
+						has_activity_type = activity_wedding
+						has_activity_option = {
+							category = special_type
+							option = wedding_type_bloody
+						}
+					}
+				}
+				desc = travel_start_event.1030.desc_red_wedding
+			}
+			#Host Wedding
+			triggered_desc = {
+				trigger = { 
+					exists = scope:host
+					exists = scope:host_spouse_to_be
+				}
+				desc = travel_start_event.1030.desc_host_wedding
+			}
+			#Wedding
+			triggered_desc = {
+				trigger = { exists = scope:host }
+				desc = travel_start_event.1030.desc_wedding
+			}
+			#My Spouse Wedding
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host }  #No host is saved so I am the host
+					exists = scope:my_spouse_to_be
+				}
+				desc = travel_start_event.1030.desc_my_spouse_wedding
+			}
+			#My Wedding
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host }  #No host is saved so I am the host
+				}
+				desc = travel_start_event.1030.desc_my_wedding
+			}
+		}
+
+		#Relation Host Wedding
+		first_valid = {
+			#Negative
+			triggered_desc = {
+				trigger = { 
+					exists = scope:host
+					exists = scope:host_spouse_to_be
+					has_character_flag = we_dislike_host
+				}
+				desc = travel_start_event.1030.desc_host_wedding_negative
+			}
+			#Positive
+			triggered_desc = {
+				trigger = { 
+					exists = scope:host
+					exists = scope:host_spouse_to_be
+					has_any_good_relationship_with_character_trigger = { CHARACTER = scope:host }
+				}
+				desc = travel_start_event.1030.desc_host_wedding_positive
+			}
+			#Default
+			triggered_desc = {
+				trigger = { 
+					exists = scope:host
+					exists = scope:host_spouse_to_be
+				}
+				desc = travel_start_event.1030.desc_host_wedding_default
+			}
+		}
+
+		#Outro Host Wedding
+		first_valid = {
+			#Sick
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					has_any_debilitating_illness = yes
+				}
+				desc = travel_start_event.1030.desc_wedding_outro_sick
+			}
+			#Negative 
+			triggered_desc = {
+				trigger = { 
+					exists = scope:host
+					exists = scope:host_spouse_to_be
+					has_character_flag = we_dislike_host
+				}
+				desc = travel_start_event.1030.desc_host_wedding_outro_negative
+			}
+			#Positive
+			triggered_desc = {
+				trigger = { 
+					exists = scope:host
+					exists = scope:host_spouse_to_be
+					has_any_good_relationship_with_character_trigger = { CHARACTER = scope:host }
+				}
+				desc = travel_start_event.1030.desc_host_wedding_outro_positive
+			}
+			#Default
+			triggered_desc = {
+				trigger = { 
+					exists = scope:host
+					exists = scope:host_spouse_to_be
+				}
+				desc = travel_start_event.1030.desc_host_wedding_outro_default
+			}
+		}
+
+
+		#Outro Wedding
+		first_valid = {
+			#Negative 
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					NOT = { exists = scope:host_spouse_to_be }
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1030.desc_wedding_outro_negative
+			}
+			#Positive
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					NOT = { exists = scope:host_spouse_to_be }
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1030.desc_wedding_outro_positive
+			}
+			#Default
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					NOT = { exists = scope:host_spouse_to_be }
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1030.desc_wedding_outro_default
+			}
+		}
+
+
+		#Outro My Literal Wedding
+		first_valid = {
+			#Sick
+			triggered_desc = {
+				trigger = { 
+					NOT = { exists = scope:host }
+						NOT = {
+						involved_activity ?= { 
+							has_activity_type = activity_wedding
+							has_activity_option = {
+								category = special_type
+								option = wedding_type_bloody
+							}
+						}
+					}
+					has_any_debilitating_illness = yes
+				}
+				desc = travel_start_event.1030.desc_my_wedding_outro_sick
+			}
+			#Negative 
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host }
+					exists = scope:my_spouse_to_be
+					OR = {
+						has_any_bad_relationship_with_character_trigger = { CHARACTER = scope:my_spouse_to_be }
+						opinion = {
+							target = scope:my_spouse_to_be
+							value < 0
+						}
+					}
+					NOT = {
+						involved_activity ?= { 
+							has_activity_type = activity_wedding
+							has_activity_option = {
+								category = special_type
+								option = wedding_type_bloody
+							}
+						}
+					}
+				}
+				desc = travel_start_event.1030.desc_my_spouse_wedding_outro_negative
+			}
+			#Positive
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host }
+					exists = scope:my_spouse_to_be
+					has_any_good_relationship_with_character_trigger = { CHARACTER = scope:my_spouse_to_be }
+					NOT = {
+						involved_activity ?= { 
+							has_activity_type = activity_wedding
+							has_activity_option = {
+								category = special_type
+								option = wedding_type_bloody
+							}
+						}
+					}
+				}
+				desc = travel_start_event.1030.desc_my_spouse_wedding_outro_positive
+			}
+			#Default
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host }
+					exists = scope:my_spouse_to_be
+					NOT = {
+						involved_activity ?= { 
+							has_activity_type = activity_wedding
+							has_activity_option = {
+								category = special_type
+								option = wedding_type_bloody
+							}
+						}
+					}
+				}
+				desc = travel_start_event.1030.desc_my_spouse_wedding_outro_default
+			}
+		}
+
+
+		#Outro My Wedding
+		first_valid = {
+			#Negative 
+			triggered_desc = {
+				trigger = { 
+					NOT = { exists = scope:host }
+					NOT = { exists = scope:my_spouse_to_be }
+					NOT = {
+						involved_activity ?= { 
+							has_activity_type = activity_wedding
+							has_activity_option = {
+								category = special_type
+								option = wedding_type_bloody
+							}
+						}
+					}
+					OR = {
+						has_any_bad_relationship_with_character_trigger = { CHARACTER = scope:first_spouse }
+						opinion = {
+							target = scope:first_spouse
+							value < 0
+						}
+					}
+					OR = {
+						has_any_bad_relationship_with_character_trigger = { CHARACTER = scope:second_spouse }
+						opinion = {
+							target = scope:second_spouse
+							value < 0
+						}
+					}
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1030.desc_my_wedding_outro_negative
+			}
+			#Positive
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host }
+					NOT = { exists = scope:my_spouse_to_be }
+					NOT = {
+						involved_activity ?= { 
+							has_activity_type = activity_wedding
+							has_activity_option = {
+								category = special_type
+								option = wedding_type_bloody
+							}
+						}
+					}
+					OR = {
+						has_any_good_relationship_with_character_trigger = { CHARACTER = scope:first_spouse }
+						has_any_good_relationship_with_character_trigger = { CHARACTER = scope:second_spouse }
+					}
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1030.desc_my_wedding_outro_positive
+			}
+			#Default
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host }
+					NOT = { exists = scope:my_spouse_to_be }
+					NOT = {
+						involved_activity ?= { 
+							has_activity_type = activity_wedding
+							has_activity_option = {
+								category = special_type
+								option = wedding_type_bloody
+							}
+						}
+					}
+					has_any_debilitating_illness = no
+				}
+				desc = travel_start_event.1030.desc_my_wedding_outro_default
+			}
+		}
+	}
+	theme = travel
+	left_portrait = {
+		character = root
+		#Blood Wedding
+		triggered_animation = {
+			trigger = {
+				NOT = { exists = scope:host } #No host saved so I am the host
+				NOT = {
+					involved_activity ?= { 
+						has_activity_type = activity_wedding
+						has_activity_option = {
+							category = special_type
+							option = wedding_type_bloody
+						}
+					}
+				}
+			}
+			animation = scheme
+		}
+		#Sick - sick animation
+		triggered_animation = {
+			trigger = { has_any_debilitating_illness = yes }
+			animation = sick
+		}
+		#We dislike the host
+		triggered_animation = {
+			trigger = { 
+				OR = {
+					has_character_flag = we_dislike_host 
+					has_character_flag = we_dislike_a_spouse
+					has_trait = cynical
+				}
+			}
+			animation = personality_cynical
+		}
+		animation = happiness
+	}
+	#Show our Travel Leader
+	lower_left_portrait = {
+		trigger = { exists = current_travel_plan.travel_leader }
+		character = current_travel_plan.travel_leader
+	}
+	#If it's our wedding, let's show the spouse to-be
+	lower_center_portrait = {
+		trigger = { exists = scope:my_spouse_to_be }
+		character = scope:my_spouse_to_be
+	}
+	#Show our host
+	lower_right_portrait = {
+		trigger = { exists = scope:host }
+		character = involved_activity.activity_host
+	}
+	trigger = {
+		is_available_travelling = yes
+		is_landed = yes
+		exists = involved_activity
+		involved_activity = { has_activity_type = activity_wedding }
+	}
+	immediate = {
+		play_music_cue = mx_cue_travel_start
+		#Check if we dislike the host
+		if = {
+			limit = {
+				NOT = { involved_activity.activity_host = root }
+			}
+			if = {
+				limit = {
+					OR = {
+						has_relation_rival = involved_activity.activity_host
+						opinion = {
+							target = involved_activity.activity_host
+							value < 10
+						}
+					}
+				}
+				add_character_flag = we_dislike_host
+			}
+			involved_activity.activity_host = { save_scope_as = host }
+		}
+		#Save the spouses
+		if = {
+			limit = { exists = involved_activity.special_guest:spouse_1 }
+			involved_activity.special_guest:spouse_1 = {
+				save_scope_as = first_spouse
+			}
+		}
+		if = {
+			limit = { exists = involved_activity.special_guest:spouse_1 }
+			involved_activity.special_guest:spouse_2 = {
+				save_scope_as = second_spouse
+			}
+		}
+		#Check if the host is a spouse
+		if = {
+			limit = { exists = scope:host }
+			if = {
+				limit = {
+					exists = scope:first_spouse
+					exists = scope:second_spouse
+				}
+				if = {
+					limit = { scope:first_spouse = scope:host }
+					scope:second_spouse = {
+						save_scope_as = host_spouse_to_be
+					}
+				}
+				if = {
+					limit = { scope:second_spouse = scope:host }
+					scope:first_spouse = {
+						save_scope_as = host_spouse_to_be
+					}
+				}
+			}
+		}
+		#Check if we're a spouse
+		if = {
+			limit = {
+				exists = scope:first_spouse
+				exists = scope:second_spouse
+			}
+			if = {
+				limit = { scope:first_spouse = root }
+				scope:second_spouse = {
+					save_scope_as = my_spouse_to_be
+				}
+			}
+			else_if = {
+				limit = { scope:second_spouse = root }
+				scope:first_spouse = {
+					save_scope_as = my_spouse_to_be
+				}
+			}
+		}
+		if = {
+			limit = {
+				NOT = { exists = scope:host }
+				OR = {
+					has_any_bad_relationship_with_character_trigger = { CHARACTER = scope:first_spouse }
+					opinion = {
+						target = scope:first_spouse
+						value < 0
+					}
+				}
+				OR = {
+					has_any_bad_relationship_with_character_trigger = { CHARACTER = scope:second_spouse }
+					opinion = {
+						target = scope:second_spouse
+						value < 0
+					}
+				}
+			}
+			add_character_flag = we_dislike_a_spouse
+		}
+		root = {
+			create_character_memory = {
+				type = travel_wedding_leaving
+				participants = {host = scope:host}
+			}
+			scope:new_memory = {
+				save_scope_as = destination_memory
+			}
+			scope:destination_memory = {
+				set_variable = {
+					name = destination
+					value = scope:final_destination_province
+				}
+			}
+		}
+	}
+	#Giddy up!
+	option = { 
+		name = {
+			text = {
+				first_valid = {
+					#Yeah, yeah ...
+					triggered_desc = {
+						trigger = {
+							OR = {
+								has_any_debilitating_illness = yes
+								has_character_flag = we_dislike_host
+								has_character_flag = we_dislike_a_spouse
+								has_trait = cynical
+							}
+						}
+						desc = travel_start_event.1000.a_cynical
+					}
+					#Everything is _awesome_
+					triggered_desc = {
+						desc = travel_start_event.1000.a
+					}
+				}
+			}
+		}
+	}
+	after = {
+		if = {
+			limit = { has_character_flag = we_dislike_host }
+			remove_character_flag = we_dislike_host
+		}
+		if = {
+			limit = { has_character_flag = we_dislike_a_spouse }
+			remove_character_flag = we_dislike_a_spouse
+		}
+	}
+}
+
+#Travelling to a Feast
+travel_start_event.1040 = {
+	type = character_event
+	title = {
+		first_valid = {
+			#Murder Feast
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host } #I am the host
+					involved_activity ?= { 
+						has_activity_type = activity_feast
+						has_activity_option = {
+							category = special_type
+							option = feast_type_murder
+						}
+					}
+				}
+				desc = travel_start_event.1040.t_murder_feast
+			}
+			#Sick Feast
+			triggered_desc = {
+				trigger = {
+					has_any_debilitating_illness = yes
+				}
+				desc = travel_start_event.1040.t_sick_feast
+			}
+			#Feast
+			triggered_desc = {
+				desc = travel_start_event.1040.t_feast
+			}
+		}
+	} 
+	desc = {
+		#Intro
+		first_valid = {
+			#Sick Murder Feast
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host } #No host was saved so I am the host
+					involved_activity ?= { 
+						has_activity_type = activity_feast
+						has_activity_option = {
+							category = special_type
+							option = feast_type_murder
+						}
+					}
+					has_any_debilitating_illness = yes
+				}
+				desc = travel_start_event.1040.desc_sick_murder_feast
+			}
+			##Murder Feast
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host } #No host was saved so I am the host
+					involved_activity ?= { 
+						has_activity_type = activity_feast
+						has_activity_option = {
+							category = special_type
+							option = feast_type_murder
+						}
+					}
+				}
+				desc = travel_start_event.1040.desc_murder_feast
+			}
+			#Feast
+			triggered_desc = {
+				trigger = { NOT = { exists = scope:host } } #No host was saved so I am the host
+				desc = travel_start_event.1000.intro_my_activity
+			}
+			#My Feast
+			triggered_desc = {
+				desc = travel_start_event.1040.desc_feast
+			}
+		}
+		#Feast Type
+		#My Feast Type
+		first_valid = {
+			#I am the guest of honor
+			triggered_desc = {
+				trigger = {
+					involved_activity ?= { 
+						has_activity_type = activity_feast
+						exists = scope:celebratory_guest
+					}
+					scope:celebratory_guest = root
+				}
+				desc = travel_start_event.1040.desc_my_feast_celebration_host
+			}
+			#Celebratory - Someone else is the geust of Honor
+			triggered_desc = {
+				trigger = {
+					involved_activity ?= { 
+						has_activity_type = activity_feast
+						exists = scope:celebratory_guest
+					}
+					NOT = { scope:celebratory_guest = root }
+				}
+				desc = travel_start_event.1040.desc_my_feast_celebration
+			}
+			#We skip this stip if no guest of honor
+		}
+		#Outro
+		first_valid = {
+			#Sick
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					has_any_debilitating_illness = yes 
+				}
+				desc = travel_start_event.1040.desc_feast_outro_sick
+			}
+			#Negative
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					has_relation_rival = scope:host
+				}
+				desc = travel_start_event.1040.desc_feast_outro_negative
+			}
+			#Positive
+			triggered_desc = {
+				trigger = {
+					exists = scope:host
+					has_any_good_relationship_with_character_trigger = { CHARACTER = scope:host }
+				}
+				desc = travel_start_event.1040.desc_feast_outro_positive
+			}
+			#Default
+			triggered_desc = {
+				trigger = { exists = scope:host }
+				desc = travel_start_event.1040.desc_feast_outro_default
+			}
+		}
+		#Outro my feast
+		first_valid = {
+			#Sick
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host }
+					has_any_debilitating_illness = yes 
+				}
+				desc = travel_start_event.1040.desc_my_feast_outro_sick
+			}
+			#Introvert
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host }
+					OR = {
+						has_trait = shy
+						has_trait = humble
+						has_trait = reclusive
+						has_trait = paranoid
+						has_trait = craven
+					}
+				}
+				desc = travel_start_event.1040.desc_my_feast_outro_introvert
+			}
+			#Extrovert
+			triggered_desc = {
+				trigger = {
+					NOT = { exists = scope:host }
+					OR = {
+						has_trait = arrogant
+						has_trait = brave
+						has_trait = gregarious
+						has_trait = trusting
+					}
+				}
+				desc = travel_start_event.1040.desc_my_feast_outro_extrovert
+			}
+			#Default my feast
+			triggered_desc = {
+				trigger = { 
+					NOT = { exists = scope:host }
+				}
+				desc = travel_start_event.1040.desc_my_feast_outro
+			}
+		}
+	}
+	theme = travel
+	left_portrait = {
+		character = root
+		#Murder feast
+		triggered_animation = {
+			trigger = { 
+				involved_activity ?= { 
+					has_activity_type = activity_feast
+					has_activity_option = {
+						category = special_type
+						option = feast_type_murder
+					}
+				}
+			}
+			animation = scheme
+		}
+		#Sick - sick animation
+		triggered_animation = {
+			trigger = { has_any_debilitating_illness = yes }
+			animation = sick
+		}
+		#We dislike the host or feasts in general
+		triggered_animation = {
+			trigger = { 
+				OR = {
+					has_character_flag = we_dislike_host
+					has_trait = shy
+					has_trait = humble
+					has_trait = reclusive
+					has_trait = paranoid
+					has_trait = craven
+				}
+			}
+			animation = personality_cynical
+		}
+		animation = happiness
+	}
+	#Show our Travel Leader
+	right_portrait = {
+		trigger = { exists = current_travel_plan.travel_leader }
+		character = current_travel_plan.travel_leader
+	}
+	#Show our guest of honor
+	lower_center_portrait = {
+		trigger = {
+			exists = scope:celebratory_guest
+			NOT = { scope:celebratory_guest = root }
+		}
+		character = scope:celebratory_guest
+	}
+	#Show our host
+	lower_right_portrait = {
+		trigger = { exists = scope:host }
+		character = scope:host
+	}
+	trigger = {
+		is_available_travelling = yes
+		is_landed = yes
+		exists = involved_activity
+		involved_activity = { has_activity_type = activity_feast }
+	}
+	immediate = {
+		play_music_cue = mx_cue_travel_start
+		#Check if we dislike the host
+		if = {
+			limit = {
+				NOT = { involved_activity.activity_host = root }
+			}
+			involved_activity.activity_host = { save_scope_as = host }
+		}
+		if = {
+			limit = {
+				NOT = { involved_activity.activity_host = root }
+			}
+			#Check if we dislike the host
+			if = {
+				limit = {
+					OR = {
+						has_relation_rival = involved_activity.activity_host
+						opinion = {
+							target = involved_activity.activity_host
+							value < 10
+						}
+					}
+				}
+				add_character_flag = we_dislike_host
+			}
+		}
+		#Save special guests, for both normal and murder feasts
+		if = {
+			limit = {
+				involved_activity ?= { 
+					has_activity_type = activity_feast
+					has_activity_option = {
+						category = special_type
+						option = feast_type_murder
+					}
+					exists = special_guest:honorary_guest #Murder Feast target
+				}
+			}
+			involved_activity.special_guest:honorary_guest = {
+				save_scope_as = celebratory_guest
+			}
+		}
+		else_if = {
+			limit = {
+				involved_activity ?= { 
+					has_activity_type = activity_feast
+					has_activity_option = {
+						category = special_type
+						option = feast_type_generic
+					}
+					exists = special_guest:honorary_guest_regular #Normal Guest of Honor
+				}
+			}
+			involved_activity.special_guest:honorary_guest_regular = {
+				save_scope_as = celebratory_guest
+			}
+		}
+		involved_activity = {
+			activity_location = {
+				save_scope_as = final_destination_province
+			}
+		}
+		root = {
+			create_character_memory = {
+				type = travel_feast_leaving
+				participants = {host = scope:host}
+			}
+			scope:new_memory = {
+				save_scope_as = destination_memory
+			}
+			scope:destination_memory = {
+				set_variable = {
+					name = destination
+					value = scope:final_destination_province
+				}
+			}
+		}
+	}
+	#Giddy up!
+	option = { 
+		name = {
+			text = {
+				first_valid = {
+					#Yeah, yeah ...
+					triggered_desc = {
+						trigger = {
+							OR = {
+								has_any_debilitating_illness = yes
+								has_character_flag = we_dislike_host
+								has_trait = cynical
+							}
+						}
+						desc = travel_start_event.1000.a_cynical
+					}
+					#Everything is _awesome_
+					triggered_desc = {
+						desc = travel_start_event.1000.a
+					}
+				}
+			}
+		}
+	}
+	after = {
+		if = {
+			limit = { has_character_flag = we_dislike_host }
+			remove_character_flag = we_dislike_host
+		}
+	}
+}
+
 #Travelling to a Hunt
 travel_start_event.1070 = {
 	type = character_event
@@ -350,7 +1528,7 @@ travel_start_event.1070 = {
 			}
 			root = {
 				create_character_memory = {
-					type = travel_hunt_Leaving
+					type = travel_hunt_leaving
 					participants = {host = scope:host}
 				}
 				scope:new_memory = {
@@ -371,14 +1549,6 @@ travel_start_event.1070 = {
 						value = scope:final_destination_province
 					}
 				}
-				# set_variable = {
-				# 	name = current_location
-				# 	value = root.location
-				# }
-				# set_variable = {
-				# 	name = destination
-				# 	value = scope:activity_location
-				# }
 			}
 		}
 	}

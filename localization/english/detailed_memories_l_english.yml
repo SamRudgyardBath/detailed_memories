@@ -9,5 +9,8 @@ siege_won_desc_1:0 "my army successfully sieged [ROOT.Var('siege_location').Titl
 negotiate_alliance_recipient_desc_1:0 "my [owner.Custom2('RelationToMeShort', SCOPE.sC('actor'))], [actor.GetTitledFirstName], negotiated an alliance with me"
 negotiate_alliance_actor_desc_1:0 "i negotiated an alliance with my [owner.Custom2('RelationToMeShort', SCOPE.sC('recipient'))], [recipient.GetTitledFirstName]"
 
-travel_generic_Leaving_desc_1:0 "i travelled to [ROOT.Var('destination').GetProvince.GetName]"
-travel_hunt_Leaving_desc_1:0 "i travelled to [ROOT.Var('destination').GetProvince.GetName] for [host.GetTitledFirstNamePossessive] [GetActivityType('activity_hunt').GetName]"
+travel_generic_leaving_desc_1:0 "i travelled to [ROOT.Var('destination').GetProvince.GetName]"
+travel_wedding_leaving_desc_1:0 "i travelled to [ROOT.Var('destination').GetProvince.GetName] for [host.GetTitledFirstNamePossessive] [GetActivityType('activity_wedding').GetName]"
+travel_hunt_leaving_desc_1:0 "i travelled to [ROOT.Var('destination').GetProvince.GetName] for [host.GetTitledFirstNamePossessive] [GetActivityType('activity_hunt').GetName]"
+travel_tournament_leaving_desc_1:0 "i travelled to [ROOT.Var('destination').GetProvince.GetName] for [host.GetTitledFirstNamePossessive] [GetActivityType('activity_tournament').GetName]"
+travel_feast_leaving_desc_1:0 "i travelled to [ROOT.Var('destination').GetProvince.GetName] for [host.GetTitledFirstNamePossessive] [GetActivityType('activity_feast').GetName]"
